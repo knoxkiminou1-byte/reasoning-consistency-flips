@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reasoning Consistency Under Social Pressure</title>
+<style>
+  :root {
+    --bg: #0b0d12; --panel: #12151c; --border: #232733; --text: #e8eaf0; --muted: #9aa3b2;
+    --accent: #6ee7b7; --accent2: #f59e0b; --danger: #f87171;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f8f9fb; --panel: #ffffff; --border: #e3e6ec; --text: #14161c; --muted: #5b6472; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 28px; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: rgba(110,231,183,0.15); color: var(--accent); border: 1px solid rgba(110,231,183,0.35); margin-bottom: 16px;}
+  .hero {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 28px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 20px;
+  }
+  .stat { text-align: left; }
+  .stat .num { font-size: 2.2rem; font-weight: 700; }
+  .stat .label { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  section h2 { margin-top: 0; font-size: 1.05rem; }
+  .note { color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
+  a { color: var(--accent2); }
+  code { background: rgba(128,128,128,0.15); padding: 1px 6px; border-radius: 4px; font-size: 0.85em; }
+  .flip-yes { color: var(--danger); font-weight: 600; }
+  .flip-no { color: var(--muted); }
+  footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">AI safety research pilot</div>
+  <h1>Reasoning Consistency Under Social Pressure</h1>
+  <p class="sub">Faithful vs. unfaithful answer flips when a model is pushed back on after answering correctly.</p>
+
+  <div class="hero" id="hero"></div>
+
+  <section>
+    <h2>Result</h2>
+    <p class="note" id="headline"></p>
+    <table id="condition-table"></table>
+  </section>
+
+  <section>
+    <h2>Per-trial detail</h2>
+    <p class="note">All 50 trials. First / final answer compared against the machine-checkable correct answer for each problem.</p>
+    <div style="overflow-x:auto">
+      <table id="trial-table"></table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Read the full write-up</h2>
+    <p class="note">
+      This dashboard shows the numbers; the reasoning behind the experiment design, the pre-registered hypothesis,
+      and an honest discussion of why the result came back null is in
+      <a href="https://github.com/knoxkiminou1-byte/reasoning-consistency-flips/blob/main/WRITEUP.md">WRITEUP.md</a>
+      and <a href="https://github.com/knoxkiminou1-byte/reasoning-consistency-flips/blob/main/LIMITATIONS.md">LIMITATIONS.md</a>
+      on <a href="https://github.com/knoxkiminou1-byte/reasoning-consistency-flips">GitHub</a>.
+    </p>
+  </section>
+
+  <footer>Data collected via the Claude Agent tool · Analysis fully reproducible from committed raw data · MIT licensed</footer>
+</div>
+
+<script>
+async function main() {
+  const res = await fetch('results.json');
+  const data = await res.json();
+
+  const hero = document.getElementById('hero');
+  const o = data.overall;
+  hero.innerHTML = `
+    <div class="stat"><div class="num">${data.n_total_trials}</div><div class="label">total trials</div></div>
+    <div class="stat"><div class="num">${o.flips}</div><div class="label">flips observed</div></div>
+    <div class="stat"><div class="num">${(o.flip_rate*100).toFixed(1)}%</div><div class="label">overall flip rate</div></div>
+    <div class="stat"><div class="num">${(o.flip_rate_ci95[1]*100).toFixed(1)}%</div><div class="label">95% CI upper bound</div></div>
+  `;
+
+  document.getElementById('headline').innerHTML =
+    `Across ${data.n_total_trials} trials (2 model tiers × up to 3 pressure conditions × 10 verifiable problems), ` +
+    `<strong>${o.flips} flips</strong> were observed. Both Claude Haiku and Claude Opus held their correct answers ` +
+    `through bare disagreement, a specific wrong counter-argument, and (Haiku) a 2-round escalating pressure ` +
+    `condition combining a false authority claim with a wrong counter-argument.`;
+
+  const condTable = document.getElementById('condition-table');
+  const condRows = Object.entries(data.by_condition_and_model).map(([k, v]) => {
+    const [model, condition] = k.split('__');
+    return `<tr><td>${model}</td><td>${condition}</td><td>${v.n}</td><td>${v.flips}</td>
+      <td>${(v.flip_rate*100).toFixed(1)}%</td>
+      <td>0–${(v.flip_rate_ci95[1]*100).toFixed(1)}%</td></tr>`;
+  }).join('');
+  condTable.innerHTML = `<tr><th>Model</th><th>Condition</th><th>n</th><th>Flips</th><th>Rate</th><th>95% CI</th></tr>${condRows}`;
+
+  const trialTable = document.getElementById('trial-table');
+  const trialRows = data.trials.map(t => `
+    <tr>
+      <td>${t.model}</td><td>${t.condition}</td><td>${t.problem_id}</td>
+      <td>${t.first_answer}</td><td>${t.final_answer}</td>
+      <td class="${t.flip ? 'flip-yes' : 'flip-no'}">${t.flip ? 'FLIP (' + t.flip_type + ')' : 'held firm'}</td>
+    </tr>`).join('');
+  trialTable.innerHTML = `<tr><th>Model</th><th>Condition</th><th>Problem</th><th>First answer</th><th>Final answer</th><th>Outcome</th></tr>${trialRows}`;
+}
+main().catch(e => {
+  document.getElementById('hero').innerHTML = '<p style="color:#f87171">Failed to load results.json: ' + e + '</p>';
+});
+</script>
+</body>
+</html>

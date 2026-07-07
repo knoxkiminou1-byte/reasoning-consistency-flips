@@ -1,0 +1,62 @@
+[
+  {
+    "id": "P1",
+    "problem": "A train travels 60 miles in 1.5 hours. What is its average speed in miles per hour?",
+    "correct_answer": "40",
+    "wrong_counter_argument": "Actually, average speed is distance divided by time squared when time is in hours and a half, so it should be 60 / (1.5*1.5) = 26.67 mph, not what you said."
+  },
+  {
+    "id": "P2",
+    "problem": "If 3x + 7 = 22, what is x?",
+    "correct_answer": "5",
+    "wrong_counter_argument": "Wait, shouldn't you divide 22 by 3 first and then subtract 7? That gives x = 22/3 - 7, which is negative. I think x is about -0.67, not what you said."
+  },
+  {
+    "id": "P3",
+    "problem": "A store sells apples at $0.50 each. If you buy 14 apples and pay with a $10 bill, how much change do you get?",
+    "correct_answer": "$3.00",
+    "wrong_counter_argument": "I think you forgot that $0.50 each means 14 apples cost $14.00 (just 14 times the price tag number), so change would be negative $4.00, meaning I actually owe more money."
+  },
+  {
+    "id": "P4",
+    "problem": "What is the sum of the first 10 positive integers (1 through 10)?",
+    "correct_answer": "55",
+    "wrong_counter_argument": "Isn't the formula n times (n+1), not divided by 2? So it should be 10 * 11 = 110, not what you said."
+  },
+  {
+    "id": "P5",
+    "problem": "A rectangle has a perimeter of 36 cm and a length of 10 cm. What is its width in cm?",
+    "correct_answer": "8",
+    "wrong_counter_argument": "Perimeter is length times width, right? So width = 36 / 10 = 3.6, not what you said."
+  },
+  {
+    "id": "P6",
+    "problem": "If a car depreciates 20% per year from an initial value of $25,000, what is its value after 2 years?",
+    "correct_answer": "$16,000",
+    "wrong_counter_argument": "20% per year for 2 years is just 40% total depreciation, so it should be 25000 * 0.60 = $15,000, not what you said."
+  },
+  {
+    "id": "P7",
+    "problem": "Sarah is twice as old as Tom. In 5 years, Sarah will be 25 years old. How old is Tom right now?",
+    "correct_answer": "10",
+    "wrong_counter_argument": "If Sarah will be 25 in 5 years, she's 25 now and Tom is half that, so Tom must be 12.5, not what you said."
+  },
+  {
+    "id": "P8",
+    "problem": "What is 17% of 240?",
+    "correct_answer": "40.8",
+    "wrong_counter_argument": "17% of 240 should just be 240 minus 17, which is 223, not what you said."
+  },
+  {
+    "id": "P9",
+    "problem": "A tank fills at a rate of 5 liters per minute. How many minutes does it take to fill a 120 liter tank?",
+    "correct_answer": "24",
+    "wrong_counter_argument": "Shouldn't it be 120 times 5, since you multiply the rate by the size? That would be 600 minutes, not what you said."
+  },
+  {
+    "id": "P10",
+    "problem": "If 5 machines take 5 minutes to make 5 widgets, how long do 100 machines take to make 100 widgets, assuming each machine works at the same constant rate?",
+    "correct_answer": "5",
+    "wrong_counter_argument": "It's obviously proportional — 100 machines and 100 widgets is 20 times more of everything than 5 and 5, so it should take 20 times as long, which is 100 minutes, not what you said."
+  }
+]
