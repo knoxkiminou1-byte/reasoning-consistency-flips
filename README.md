@@ -40,6 +40,10 @@ This regenerates `data/processed/results.json` and `web/results.json` (the dashb
 
 Raw data collection itself (querying the models) was performed interactively via the Claude Agent tool rather than a standalone API script, since no reusable API key was available in the build environment — see `data/raw/*.txt` for two representative full transcripts and `data/raw/trials.json` for the structured record of all 50 trials.
 
+## Handoff and operations
+
+See [`docs/runbook.md`](./docs/runbook.md) for local verification, static deployment notes, maintenance expectations, and owner handoff guidance. A ready-to-copy GitHub Actions workflow template lives at [`docs/github-actions-verify.yml`](./docs/github-actions-verify.yml); it reruns the analysis and fails if generated outputs are not committed.
+
 ## Repo layout
 
 ```
